@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from torch.utils.data import Dataset
 
 # Page config
-st.set_page_config(page_title="Chat Bot", layout="wide")
+st.set_page_config(page_title="Blender Chat Bot", layout="wide")
 
 # Initialize model and tokenizer
 @st.cache_resource
@@ -60,7 +60,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Chat UI
-st.title("Chat Bot")
+st.title("Blender Chat Bot")
 
 # Display chat messages
 for message in st.session_state.messages:
