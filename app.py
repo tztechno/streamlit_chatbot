@@ -1,4 +1,4 @@
-import streamlit as st
+ngimport streamlit as st
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from torch.utils.data import Dataset
@@ -80,7 +80,7 @@ def generate_speech(text, lang='en'):
         audio_buffer.seek(0)
         return audio_buffer.read()
     except Exception as e:
-        st.error(f"音声生成エラー: {str(e)}")
+        st.error(f"Error: {str(e)}")
         return None
 
 # Initialize session state
@@ -115,7 +115,7 @@ if prompt := st.chat_input("What's on your mind?"):
         
         # 音声読み上げが有効な場合、応答を音声に変換して再生
         if enable_tts:
-            with st.spinner("音声を生成中..."):
+            with st.spinner("Generating..."):
                 audio_data = generate_speech(response, lang)
                 if audio_data:
                     create_audio_player(audio_data)
