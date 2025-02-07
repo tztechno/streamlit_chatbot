@@ -93,7 +93,7 @@ st.title("Blender Chat Bot")
 # サイドバー設定
 with st.sidebar:
     enable_tts = st.checkbox("Enable Text-to-Speech", value=True)
-    lang = st.selectbox("音声言語", ['en', 'ja'], index=0)
+    lang = st.selectbox("Language", ['en'], index=0)
 
 # Display chat messages
 for message in st.session_state.messages:
