@@ -11,35 +11,14 @@ import io
 # Page config
 st.set_page_config(page_title="Blender Chat Bot", layout="wide")
 
-# 改善された音声再生用のHTML関数
+# シンプルな音声再生用のHTML関数
 def create_audio_player(audio_data):
     b64 = base64.b64encode(audio_data).decode()
     
-    # JavaScriptを使用して自動再生を試み、失敗した場合にコントロールを表示
     md = f"""
-        <div id="audio-container">
-            <script>
-                window.addEventListener('load', function() {{
-                    const audioData = 'data:audio/mp3;base64,{b64}';
-                    const audio = new Audio(audioData);
-                    
-                    // 自動再生を試みる
-                    audio.play().catch(function(error) {{
-                        console.log("自動再生失敗:", error);
-                        // 自動再生が失敗した場合、手動コントロールを表示
-                        const container = document.getElementById('audio-container');
-                        const audioElement = document.createElement('audio');
-                        audioElement.controls = true;
-                        audioElement.style.width = '100%';
-                        const source = document.createElement('source');
-                        source.src = audioData;
-                        source.type = 'audio/mp3';
-                        audioElement.appendChild(source);
-                        container.appendChild(audioElement);
-                    }});
-                }});
-            </script>
-        </div>
+        <audio autoplay controls style="width: 100%">
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
     """
     return st.markdown(md, unsafe_allow_html=True)
 
