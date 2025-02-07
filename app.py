@@ -5,60 +5,20 @@ from torch.utils.data import Dataset
 from gtts import gTTS
 import base64
 import os
-from pathlib import Path
-import io
 
 # Page config
 st.set_page_config(page_title="Blender Chat Bot", layout="wide")
 
-# モバイル対応の強化された音声再生用のHTML関数
-def create_audio_player(audio_data):
+# 音声を再生するためのHTML関数
+def autoplay_audio(audio_data):
     b64 = base64.b64encode(audio_data).decode()
-    
-    # より積極的な自動再生の試行
     md = f"""
-        <div id="audio-container">
-            <audio id="audio-player" autoplay playsinline muted controls style="width: 100%">
-                <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-            </audio>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {{
-                    const audioPlayer = document.getElementById('audio-player');
-                    
-                    // ミュートを解除して再生を試みる
-                    const playAudio = async () => {{
-                        try {{
-                            audioPlayer.muted = false;
-                            await audioPlayer.play();
-                        }} catch (error) {{
-                            console.log('Autoplay failed:', error);
-                            // エラー時は手動再生用のコントロールを表示したまま
-                            audioPlayer.controls = true;
-                        }}
-                    }};
-
-                    // タッチイベントとクリックイベントの両方で再生を試みる
-                    const startPlayback = () => {{
-                        playAudio();
-                        // イベントリスナーを削除（一度だけ実行）
-                        document.removeEventListener('touchstart', startPlayback);
-                        document.removeEventListener('click', startPlayback);
-                    }};
-
-                    // 様々なイベントで再生を試みる
-                    document.addEventListener('touchstart', startPlayback, {{once: true}});
-                    document.addEventListener('click', startPlayback, {{once: true}});
-                    
-                    // 直接再生も試みる
-                    playAudio();
-                }});
-            </script>
-        </div>
+        <audio autoplay>
+        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
     """
-    return st.markdown(md, unsafe_allow_html=True)
+    st.markdown(md, unsafe_allow_html=True)
 
-# 以下は同じなので省略（前のコードと同じ）
 # Initialize model and tokenizer
 @st.cache_resource
 def load_model():
