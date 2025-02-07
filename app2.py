@@ -3,9 +3,21 @@ import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from torch.utils.data import Dataset
 from gtts import gTTS
+import base64
+import os
 
 # Page config
 st.set_page_config(page_title="Blender Chat Bot", layout="wide")
+
+# 音声を再生するためのHTML関数
+def autoplay_audio(audio_data):
+    b64 = base64.b64encode(audio_data).decode()
+    md = f"""
+        <audio autoplay>
+        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
+    """
+    st.markdown(md, unsafe_allow_html=True)
 
 # Initialize model and tokenizer
 @st.cache_resource
@@ -56,12 +68,25 @@ def generate_response(input_text):
         )
         return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
+# 音声を生成する関数
+def generate_speech(text):
+    tts = gTTS(text=text, lang='en')
+    # メモリ上で音声データを生成
+    import io
+    audio_buffer = io.BytesIO()
+    tts.write_to_fp(audio_buffer)
+    audio_buffer.seek(0)
+    return audio_buffer.read()
+
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Chat UI
 st.title("Blender Chat Bot")
+
+# 音声読み上げのトグル
+enable_tts = st.sidebar.checkbox("Enable Text-to-Speech", value=False)
 
 # Display chat messages
 for message in st.session_state.messages:
@@ -80,5 +105,8 @@ if prompt := st.chat_input("What's on your mind?"):
         response = generate_response(prompt)
         st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
-
-  
+        
+        # 音声読み上げが有効な場合、応答を音声に変換して再生
+        if enable_tts:
+            audio_data = generate_speech(response)
+            autoplay_audio(audio_data)
