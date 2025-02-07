@@ -1,4 +1,4 @@
-ngimport streamlit as st
+import streamlit as st
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from torch.utils.data import Dataset
